@@ -12,22 +12,60 @@ var activity = "Course";
 
 export let saveCourse = async (req, res, next) => {
     const errors = validationResult(req);
-    if(errors.isEmpty()){
-        try{
-            
-            const createInvestors:CourseDocument = req.body;
-            const createData = new Course(createInvestors);
-            const insertData = await createData.save();
-            response(req,res,activity,'Level-2','Save-ContactUs',true,200,insertData,clientError.success.savedSuccessfully);
-        } catch (err:any){
-            response(req,res,activity,'Level-3','Save-ContactUs',false,500,{},errorMessage.internalServer, err.message);
-        }
-    }
-    else{
-        response(req, res, activity,  'Level-3','Save-ContactUs', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-    }
+    if (errors.isEmpty()) {
+        try {
+            const courseData = req.body;
 
-}
+            // Validate fields
+            if (!courseData.courseName) {
+                throw new Error("Course name is required.");
+            }
+
+            const newCourse = new Course(courseData);
+            const savedCourse = await newCourse.save();
+
+            response(
+                req,
+                res,
+                activity,
+                'Level-2',
+                'Save-ContactUs',
+                true,
+                200,
+                savedCourse,
+                clientError.success.savedSuccessfully
+            );
+        } catch (err) {
+            console.error("Error saving course:", err);
+            response(
+                req,
+                res,
+                activity,
+                'Level-3',
+                'Save-ContactUs',
+                false,
+                500,
+                {},
+                errorMessage.internalServer,
+                err.message
+            );
+        }
+    } else {
+        console.warn("Validation errors:", errors.mapped());
+        response(
+            req,
+            res,
+            activity,
+            'Level-3',
+            'Save-ContactUs',
+            false,
+            422,
+            {},
+            errorMessage.fieldValidation,
+            JSON.stringify(errors.mapped())
+        );
+    }
+};
 
 
 
