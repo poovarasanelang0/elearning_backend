@@ -4,11 +4,11 @@
   "description": " ",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "export NODE_ENV=production&& ts-node-dev --max-old-space-size=2048 ./src/bin/server.ts --fast",
+    "build": "tsc",
+    "start": "export NODE_ENV=production&& node ./src/dist/bin/server.js",
     "dev": "export NODE_ENV=development&& ts-node-dev --max-old-space-size=2048 ./src/bin/server.ts --fast",
-    "local": "set NODE_ENV=local&&  ts-node-dev --max-old-space-size=2048 ./src/bin/server.ts --fast",
-    "testing": "export NODE_ENV=testing&&  ts-node-dev --max-old-space-size=2048 ./src/bin/server.ts --fast"
+    "local": "export NODE_ENV=local&& ts-node-dev --max-old-space-size=2048 ./src/bin/server.ts --fast",
+    "testing": "export NODE_ENV=testing&& ts-node-dev --max-old-space-size=2048 ./src/bin/server.ts --fast"
   },
   "author": "",
   "license": "ISC",
@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "dotenv": "^16.3.1",
-    "ts-node-dev": "^2.0.0"
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.0.0"
   }
 }

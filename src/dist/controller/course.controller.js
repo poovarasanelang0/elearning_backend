@@ -10,16 +10,22 @@ let saveCourse = async (req, res, next) => {
     const errors = (0, express_validator_1.validationResult)(req);
     if (errors.isEmpty()) {
         try {
-            const createInvestors = req.body;
-            const createData = new course_model_1.Course(createInvestors);
-            const insertData = await createData.save();
-            (0, commonResponseHandler_1.response)(req, res, activity, 'Level-2', 'Save-ContactUs', true, 200, insertData, ErrorMessage_1.clientError.success.savedSuccessfully);
+            const courseData = req.body;
+            // Validate fields
+            if (!courseData.courseName) {
+                throw new Error("Course name is required.");
+            }
+            const newCourse = new course_model_1.Course(courseData);
+            const savedCourse = await newCourse.save();
+            (0, commonResponseHandler_1.response)(req, res, activity, 'Level-2', 'Save-ContactUs', true, 200, savedCourse, ErrorMessage_1.clientError.success.savedSuccessfully);
         }
         catch (err) {
+            console.error("Error saving course:", err);
             (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Save-ContactUs', false, 500, {}, ErrorMessage_1.errorMessage.internalServer, err.message);
         }
     }
     else {
+        console.warn("Validation errors:", errors.mapped());
         (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Save-ContactUs', false, 422, {}, ErrorMessage_1.errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };

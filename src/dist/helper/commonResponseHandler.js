@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendReferralCode = exports.sendEmailOtp = exports.sendOtp = exports.generate = exports.sendEmail = exports.response = void 0;
+exports.sendReferralCode = exports.sendEmailOtp = exports.sendOtp = exports.sendEmail = exports.response = void 0;
+exports.generate = generate;
 const logs_controller_1 = require("../controller/logs.controller");
 const logs_model_1 = require("../models/logs.model");
 var nodemailer = require('nodemailer');
@@ -40,8 +41,8 @@ exports.response = response;
 const sendEmail = async (req, email, subject, text) => {
     var sender = nodemailer.createTransport({
         service: 'outlook',
-        port: 587,
-        secure: false,
+        port: 587, //587
+        secure: false, // true for 465, false for other ports
         auth: {
             user: 'info@Pixalive.me',
             pass: 'Pale2468'
@@ -80,7 +81,6 @@ function generate(length) {
     }
     return result;
 }
-exports.generate = generate;
 /**
 * @author Mohanraj V
 * @date 27-09-2023
