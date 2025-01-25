@@ -92,20 +92,41 @@ export const getCourseProgram = async (req, res) => {
     }
 }
 
+// export let deletedCourse = async (req, res, next) => {
+//     try {
+//         let id = req.query._id;
+//         let {modifiedBy,modifiedOn} = req.body;
+//         const usersData = await Question.findByIdAndUpdate({_id:id},
+//             {$set:{isDeleted:true,
+//              modifiedBy:modifiedBy,
+//              modifiedOn:modifiedOn
+//     }});
+//     response(req, res, activity, 'Level-2', 'Delete-Users', true, 200, usersData, clientError.success.deleteSuccess);
+//     } catch (error: any) {
+//         response(req, res, activity, 'Level-3', 'Delete-Users', false, 500, {}, errorMessage.internalServer, error.message);
+//     }
+// }
+
+
+
+
 export let deletedCourse = async (req, res, next) => {
     try {
-        let id = req.query._id;
-        let {modifiedBy,modifiedOn} = req.body;
-        const usersData = await Question.findByIdAndUpdate({_id:id},
-            {$set:{isDeleted:true,
-             modifiedBy:modifiedBy,
-             modifiedOn:modifiedOn
-    }});
-    response(req, res, activity, 'Level-2', 'Delete-Users', true, 200, usersData, clientError.success.deleteSuccess);
+        let id = req.query._id;  // Retrieve course ID from query params
+
+        // Use findByIdAndDelete to permanently delete the course
+        const deletedData = await Question.findByIdAndDelete(id);
+
+        if (!deletedData) {
+            return response(req, res, activity, 'Level-2', 'Delete-Users', false, 404, {}, 'Question not found or already deleted');
+        }
+
+        response(req, res, activity, 'Level-2', 'Delete-Users', true, 200, deletedData, 'Question permanently deleted');
     } catch (error: any) {
         response(req, res, activity, 'Level-3', 'Delete-Users', false, 500, {}, errorMessage.internalServer, error.message);
     }
 }
+
 
 
 export let getFilterCourse = async (req, res, next) => {

@@ -10,6 +10,7 @@ import Course from './course.router';
 import Question from './questions.router';
 import User from './user.router';
 import Result from './result.router';
+import Sop from './sop.router';
 
 
 router.use('/master',Master);
@@ -18,5 +19,7 @@ router.use('/user',User);
 router.use('/course',Course);
 router.use('/question',Question);
 router.use('/result',Result);
+router.use('/sop',Sop);
+
 
 export default router

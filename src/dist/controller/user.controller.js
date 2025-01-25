@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFilterCourse = exports.deletedCourse = exports.getSingleCourse = exports.updateCourse = exports.getAllCourse = exports.saveUsers = void 0;
+// Import dependencies
 const express_validator_1 = require("express-validator");
 const ErrorMessage_1 = require("../helper/ErrorMessage");
 const commonResponseHandler_1 = require("../helper/commonResponseHandler");
@@ -18,23 +19,22 @@ let saveUsers = async (req, res, next) => {
                 const UserDetails = req.body;
                 UserDetails.createdOn = new Date();
                 UserDetails.createdBy = UserDetails.name;
-                let date = new Date();
-                // UserDetails.date = date?.getDate();
-                // UserDetails.month = date?.getMonth() + 1;
-                // UserDetails.year = date?.getFullYear()
                 const createData = new user_model_1.User(UserDetails);
                 let insertData = await createData.save();
                 const token = await TokenManager.CreateJWTToken({
                     id: insertData["_id"],
                     name: insertData["name"],
                 });
-                const result = {};
-                result['_id'] = insertData._id;
-                result['UserName'] = insertData.name;
-                let finalResult = {};
-                finalResult["loginType"] = 'User';
-                finalResult["UserDetails"] = result;
-                finalResult["token"] = token;
+                const result = {
+                    _id: insertData._id,
+                    UserName: insertData.name,
+                    designation: insertData.designation,
+                };
+                const finalResult = {
+                    loginType: 'User',
+                    UserDetails: result,
+                    token: token,
+                };
                 (0, commonResponseHandler_1.response)(req, res, activity, 'Level-2', 'Save-User', true, 200, finalResult, ErrorMessage_1.clientError.success.registerSuccessfully);
             }
             else {
@@ -50,6 +50,7 @@ let saveUsers = async (req, res, next) => {
     }
 };
 exports.saveUsers = saveUsers;
+// Get all users
 let getAllCourse = async (req, res, next) => {
     try {
         const data = await user_model_1.User.find({ isDeleted: false });
@@ -60,14 +61,18 @@ let getAllCourse = async (req, res, next) => {
     }
 };
 exports.getAllCourse = getAllCourse;
+// Update user with designation
 let updateCourse = async (req, res, next) => {
     try {
         const updateData = req.body;
         const updatedTerms = await user_model_1.User.findByIdAndUpdate({ _id: req.body._id }, {
             $set: {
                 name: updateData.name,
-            }
-        });
+                email: updateData.email,
+                mobileNo: updateData.mobileNo,
+                designation: updateData.designation, // Update designation
+            },
+        }, { new: true });
         (0, commonResponseHandler_1.response)(req, res, activity, 'Level-1', 'Update-ContactUs', true, 200, updatedTerms, ErrorMessage_1.clientError.success.updateSuccess);
     }
     catch (err) {
@@ -77,22 +82,29 @@ let updateCourse = async (req, res, next) => {
 exports.updateCourse = updateCourse;
 let getSingleCourse = async (req, res, next) => {
     try {
-        const userData = await user_model_1.User.findById({ _id: req.query._id });
+        const userId = req.query._id;
+        console.log("Incoming UserId:", userId);
+        if (!userId) {
+            return res.status(400).json({ message: "User ID is required." });
+        }
+        const userData = await user_model_1.User.findById(userId);
+        if (!userData) {
+            return res.status(404).json({ message: "User not found." });
+        }
         (0, commonResponseHandler_1.response)(req, res, activity, 'Level-1', 'Get-SingleUsers', true, 200, userData, ErrorMessage_1.clientError.success.fetchedSuccessfully);
     }
     catch (err) {
-        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Get-SingleUsers', false, 500, {}, ErrorMessage_1.errorMessage.internalServer, err.message);
+        console.error("Error fetching user data:", err);
+        res.status(500).json({ message: "Internal Server Error", error: err.message });
     }
 };
 exports.getSingleCourse = getSingleCourse;
+// Soft delete user
 let deletedCourse = async (req, res, next) => {
     try {
-        let id = req.query._id;
-        let { modifiedBy, modifiedOn } = req.body;
-        const usersData = await user_model_1.User.findByIdAndUpdate({ _id: id }, { $set: { isDeleted: true,
-                modifiedBy: modifiedBy,
-                modifiedOn: modifiedOn
-            } });
+        const id = req.query._id;
+        const { modifiedBy, modifiedOn } = req.body;
+        const usersData = await user_model_1.User.findByIdAndUpdate({ _id: id }, { $set: { isDeleted: true, modifiedBy: modifiedBy, modifiedOn: modifiedOn } });
         (0, commonResponseHandler_1.response)(req, res, activity, 'Level-2', 'Delete-Users', true, 200, usersData, ErrorMessage_1.clientError.success.deleteSuccess);
     }
     catch (error) {
@@ -100,28 +112,21 @@ let deletedCourse = async (req, res, next) => {
     }
 };
 exports.deletedCourse = deletedCourse;
+// Filter users with designation
 let getFilterCourse = async (req, res, next) => {
     try {
-        var findQuery;
-        var andList = [];
-        var limit = req.body.limit ? req.body.limit : 0;
-        var page = req.body.page ? req.body.page : 0;
+        const andList = [];
+        const limit = req.body.limit || 0;
+        const page = req.body.page || 0;
         andList.push({ isDeleted: false });
         andList.push({ status: 1 });
-        andList.push({ user: req.body.loginId });
-        if (req.body.name) {
+        if (req.body.name)
             andList.push({ name: req.body.name });
-        }
-        if (req.body.email) {
+        if (req.body.email)
             andList.push({ email: req.body.email });
-        }
-        if (req.body.password) {
-            andList.push({ password: req.body.password });
-        }
-        if (req.body.mobileNo) {
-            andList.push({ mobileNo: req.body.mobileNo });
-        }
-        findQuery = (andList.length > 0) ? { $and: andList } : {};
+        if (req.body.designation)
+            andList.push({ designation: req.body.designation }); // Filter by designation
+        const findQuery = andList.length > 0 ? { $and: andList } : {};
         const userList = await user_model_1.User.find(findQuery).sort({ createdOn: -1 }).limit(limit).skip(page);
         const userCount = await user_model_1.User.find(findQuery).count();
         (0, commonResponseHandler_1.response)(req, res, activity, 'Level-2', 'Get-FilterDeveloper', true, 200, { userList, userCount }, ErrorMessage_1.clientError.success.fetchedSuccessfully);

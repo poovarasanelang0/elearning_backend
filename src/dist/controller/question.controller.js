@@ -75,15 +75,29 @@ const getCourseProgram = async (req, res) => {
     }
 };
 exports.getCourseProgram = getCourseProgram;
+// export let deletedCourse = async (req, res, next) => {
+//     try {
+//         let id = req.query._id;
+//         let {modifiedBy,modifiedOn} = req.body;
+//         const usersData = await Question.findByIdAndUpdate({_id:id},
+//             {$set:{isDeleted:true,
+//              modifiedBy:modifiedBy,
+//              modifiedOn:modifiedOn
+//     }});
+//     response(req, res, activity, 'Level-2', 'Delete-Users', true, 200, usersData, clientError.success.deleteSuccess);
+//     } catch (error: any) {
+//         response(req, res, activity, 'Level-3', 'Delete-Users', false, 500, {}, errorMessage.internalServer, error.message);
+//     }
+// }
 let deletedCourse = async (req, res, next) => {
     try {
-        let id = req.query._id;
-        let { modifiedBy, modifiedOn } = req.body;
-        const usersData = await questions_model_1.Question.findByIdAndUpdate({ _id: id }, { $set: { isDeleted: true,
-                modifiedBy: modifiedBy,
-                modifiedOn: modifiedOn
-            } });
-        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-2', 'Delete-Users', true, 200, usersData, ErrorMessage_1.clientError.success.deleteSuccess);
+        let id = req.query._id; // Retrieve course ID from query params
+        // Use findByIdAndDelete to permanently delete the course
+        const deletedData = await questions_model_1.Question.findByIdAndDelete(id);
+        if (!deletedData) {
+            return (0, commonResponseHandler_1.response)(req, res, activity, 'Level-2', 'Delete-Users', false, 404, {}, 'Question not found or already deleted');
+        }
+        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-2', 'Delete-Users', true, 200, deletedData, 'Question permanently deleted');
     }
     catch (error) {
         (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Delete-Users', false, 500, {}, ErrorMessage_1.errorMessage.internalServer, error.message);

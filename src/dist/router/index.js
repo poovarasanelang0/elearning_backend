@@ -8,11 +8,13 @@ const course_router_1 = require("./course.router");
 const questions_router_1 = require("./questions.router");
 const user_router_1 = require("./user.router");
 const result_router_1 = require("./result.router");
+const sop_router_1 = require("./sop.router");
 router.use('/master', master_router_1.default);
 router.use('/login', login_router_1.default);
 router.use('/user', user_router_1.default);
 router.use('/course', course_router_1.default);
 router.use('/question', questions_router_1.default);
 router.use('/result', result_router_1.default);
+router.use('/sop', sop_router_1.default);
 exports.default = router;
 //# sourceMappingURL=index.js.map
