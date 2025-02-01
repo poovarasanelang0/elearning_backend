@@ -7,6 +7,7 @@ import { User } from "../models/user.model";
 
 const activity = 'Result';
 
+
 export let createResult = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -215,111 +216,6 @@ export let getResult = async (req, res, next) => {
   }
 };
 
-// working code 
-// export let getPassCounts = async (req, res, next) => {
-//   const { courseId } = req.query;
-
-//   try {
-//     // Prepare the filter for the Result query
-//     const filter = {
-//       $expr: { $gte: [{ $toDouble: "$percentage" }, 80] },
-//       testStatus: "complete",
-//     };
-//         if (courseId) {
-//       filter["courseId"] = courseId;
-//     }
-
-//     // Find the results based on the filter
-//     const results = await Result.find(filter);
-
-//     if (!results || results.length === 0) {
-//       return response(
-//         req,
-//         res,
-//         activity,
-//         'Level-3',
-//         'Get-Pass-Counts',
-//         false,
-//         404,
-//         {},
-//         'No results found for the specified query.'
-//       );
-//     }
-
-//     // Initialize counters
-//     let totalPassCount = 0;
-//     const attemptPassCounts = { 1: 0, 2: 0, 3: 0 };
-//     const coursePassCounts = {};
-
-//     // Iterate through results and accumulate counts
-//     for (let result of results) {
-//       totalPassCount++;
-
-//       const attempt = result.attemptNumber;
-//       if (attempt === 1) {
-//         attemptPassCounts[1]++;
-//       } else if (attempt === 2) {
-//         attemptPassCounts[2]++;
-//       } else {
-//         attemptPassCounts[3]++;
-//       }
-
-//       const courseId = result.courseId.toString();
-//       if (!coursePassCounts[courseId]) {
-//         // Fetch course details to add the course name
-//         const course = await Course.findById(courseId);
-//         coursePassCounts[courseId] = {
-//           courseName: course ? course.courseName : 'Unknown', // Default to 'Unknown' if course not found
-//           passCount: 0,
-//           'attempt-1Count': 0,
-//           'attempt-2Count': 0,
-//           'attempt-3Count': 0,
-//         };
-//       }
-
-//       // Increment pass count per course and attempt
-//       coursePassCounts[courseId].passCount++;
-//       if (attempt === 1) {
-//         coursePassCounts[courseId]['attempt-1Count']++;
-//       } else if (attempt === 2) {
-//         coursePassCounts[courseId]['attempt-2Count']++;
-//       } else {
-//         coursePassCounts[courseId]['attempt-3Count']++;
-//       }
-//     }
-
-//     // Return the response with the pass counts and course names
-//     return response(
-//       req,
-//       res,
-//       activity,
-//       'Level-2',
-//       'Get-Pass-Counts',
-//       true,
-//       200,
-//       {
-//         totalPassCount,
-//         attemptPassCounts,
-//         coursePassCounts,
-//       },
-//       'Pass counts retrieved successfully.'
-//     );
-//   } catch (err) {
-//     console.error(err);
-//     return response(
-//       req,
-//       res,
-//       activity,
-//       'Level-3',
-//       'Get-Pass-Counts',
-//       false,
-//       500,
-//       {},
-//       'Internal Server Error',
-//       err.message || 'Unknown error occurred.'
-//     );
-//   }
-// };
 
 
 export let getPassCounts = async (req, res, next) => {
@@ -351,13 +247,11 @@ export let getPassCounts = async (req, res, next) => {
       );
     }
 
-    // Initialize counters
     let totalPassCount = 0;
     let totalAttemptCount = 0; // Initialize total attempt count
     const attemptPassCounts = { 1: 0, 2: 0, 3: 0 };
     const coursePassCounts = {};
 
-    // Iterate through results and accumulate counts
     for (let result of results) {
       totalPassCount++;
 
@@ -372,7 +266,6 @@ export let getPassCounts = async (req, res, next) => {
 
       const courseId = result.courseId.toString();
       if (!coursePassCounts[courseId]) {
-        // Fetch course details to add the course name
         const course = await Course.findById(courseId);
         coursePassCounts[courseId] = {
           courseName: course ? course.courseName : "Unknown", // Default to 'Unknown' if course not found
@@ -380,11 +273,10 @@ export let getPassCounts = async (req, res, next) => {
           "attempt-1Count": 0,
           "attempt-2Count": 0,
           "attempt-3Count": 0,
-          totalAttemptCount: 0, // Initialize total attempt count
+          totalAttemptCount: 0, 
         };
       }
 
-      // Increment pass count per course and attempt
       coursePassCounts[courseId].passCount++;
       if (attempt === 1) {
         coursePassCounts[courseId]["attempt-1Count"]++;

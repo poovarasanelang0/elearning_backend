@@ -67,8 +67,8 @@ export const sendEmail = async (req, email, subject?: any, text?: any) => {
 }
 
 /**
- * @author Mohanraj V 
- * @date 26-09-2023
+ * @author poo
+ * @date 22-01-2025
  * @param {Object} req 
  * @param {Object} res 
  * @param {Function} next  
@@ -87,8 +87,8 @@ export function generate(length) {
     }
 
     /**
- * @author Mohanraj V 
- * @date 27-09-2023
+ * @author poo
+ * @date 22-01-2025
  * @param {Object} req 
  * @param {Object} res 
  * @param {Function} next  

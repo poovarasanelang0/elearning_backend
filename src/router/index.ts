@@ -21,5 +21,4 @@ router.use('/question',Question);
 router.use('/result',Result);
 router.use('/sop',Sop);
 
-
 export default router

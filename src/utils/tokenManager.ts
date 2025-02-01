@@ -6,11 +6,11 @@ const activity = 'token';
 
 /**
  * @author po V / 
- * @date 22-09-2023
+ * @date 22-01-2025
  * @param {Object} req 
  * @param {Object} res 
  * @param {Function} next  
- * @description This Function is used to token creation
+ * @description 
  */
 
 export let CreateJWTToken = (data: any = {}) => {
@@ -29,8 +29,8 @@ export let CreateJWTToken = (data: any = {}) => {
 
 
 /**
- * @author Mohanraj V / Santhosh
- * @date 22-09-2023
+ * @author Poo V 
+ * @date 22-01-2025
  * @param {Object} req 
  * @param {Object} res 
  * @param {Function} next  
@@ -58,6 +58,7 @@ export let checkSession = async (req, res, next) => {
                         next();
                     }
                 });
+
             } catch (err: any) {
                 return response(req, res, activity, 'Check-Session','Level-3',  false, 499, {}, clientError.token.unauthRoute, err.message);
             }

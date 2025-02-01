@@ -5,8 +5,8 @@ import { body } from 'express-validator';
 
 
 /**
- * @author Mohanraj V / Santhosh
- * @date  07-09-2023
+ * @author poo
+ * @date 22-01-2025
  * @description Function to check for the Validation of Query
  * @param {string} id
  * @param {boolean} isRequired
@@ -19,8 +19,8 @@ export let checkQuery = (id) => {
 }
 
 /**
- * @author Mohanraj V / Santhosh
- * @date  07-09-2023
+ * @author poo
+ * @date 22-01-2025
  * @description Function to check for the Validation of Params
  * @param {string} id
  * @param {boolean} isRequired
@@ -33,8 +33,8 @@ export let checkParam = (id) => {
 }
 
 /**
- * @author M0hanraj V / Santhosh
- * @date  22-09-2023
+ * @author poo
+ * @date 22-01-2025
  * @description Function to check for the Validation of boady arguments
  * @param {string} val
  * @param {boolean} isRequired

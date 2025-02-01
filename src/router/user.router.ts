@@ -17,7 +17,7 @@ router.get('/', //get all
     getAllCourse
     );
     
-router.put('/', //update Course
+router.put('/', 
     basicAuthUser,
     checkSession,
     checkRequestBodyParams('_id'),
